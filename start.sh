@@ -1,0 +1,1 @@
+docker-compose --build --env-file .env up -d
