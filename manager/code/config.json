@@ -1,0 +1,21 @@
+{
+    "db":{
+        "host": "192.168.8.206",
+        "port": 5432,
+        "dbname": "SHOME",
+        "user": "admin",
+        "pass": "andlis88"
+    },
+    "mqtt":{
+        "host": "192.168.8.206",
+        "port": 1883,
+        "user": "manager",
+        "pass": "pwd",
+        "max_retries": 60,
+        "sub_topic": ["/SENS/*/WRITE/#", "/SENS/*/SYS/#"]
+    },
+    "manager":{
+        "topics":["WRITE"],
+        "lux_topic": "/SENS/01/READ/ALL"
+    }
+}

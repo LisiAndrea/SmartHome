@@ -1,0 +1,23 @@
+version: "3.2"
+services:
+  rabbitmq:
+    #image: rabbitmq:3-management-alpine
+    build: .
+    container_name: 'rabbitmq'
+    restart: always
+    hostname: 'rabbitmq'
+    #command: "/bin/sh -c \"rabbitmq-plugins enable rabbitmq_mqtt; rabbitmq-server\""
+    ports:
+        - 5672:5672
+        - 15672:15672
+        - 1883:1883
+    volumes:
+        - ./data/:/var/lib/rabbitmq/
+        - ./logs/:/var/log/rabbitmq/
+        #- '.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/mnesia/' 
+   #networks:
+        #- rabbitmq_go_net
+
+#networks:
+#  rabbitmq_go_net:
+#    driver: bridge

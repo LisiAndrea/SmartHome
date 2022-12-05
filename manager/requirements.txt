@@ -1,0 +1,4 @@
+paho-mqtt==1.6.1
+psycopg2-binary~=2.8.6
+schedule
+ipdb

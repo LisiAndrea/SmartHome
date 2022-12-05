@@ -1,0 +1,31 @@
+#{await_condition_timeout => 30000,broadcast_time => 100,
+  cluster_name => mqtt_node,friendly_name => "mqtt_node",
+  id => {mqtt_node,rabbit@rabbitmq},
+  initial_members => [],install_snap_rpc_timeout => 120000,
+  log_init_args => #{uid => <<"MQTT_NTZHO1JXKM0VP">>},
+  machine => {module,mqtt_machine,#{}},
+  system_config =>
+      #{data_dir =>
+            "/var/lib/rabbitmq/mnesia/rabbit@rabbitmq/coordination/rabbit@rabbitmq",
+        name => coordination,
+        names =>
+            #{closed_mem_tbls => ra_coordination_log_closed_mem_tables,
+              directory => ra_coordination_directory,
+              directory_rev => ra_coordination_directory_reverse,
+              log_ets => ra_coordination_log_ets,
+              log_meta => ra_coordination_log_meta,
+              log_sup => ra_coordination_log_sup,
+              open_mem_tbls => ra_coordination_log_open_mem_tables,
+              segment_writer => ra_coordination_segment_writer,
+              server_sup => ra_coordination_server_sup_sup,
+              wal => ra_coordination_log_wal,
+              wal_sup => ra_coordination_log_wal_sup},
+        segment_compute_checksums => true,segment_max_entries => 4096,
+        wal_compute_checksums => true,
+        wal_data_dir =>
+            "/var/lib/rabbitmq/mnesia/rabbit@rabbitmq/coordination/rabbit@rabbitmq",
+        wal_garbage_collect => false,wal_max_batch_size => 4096,
+        wal_max_entries => undefined,wal_max_size_bytes => 64000000,
+        wal_pre_allocate => false,wal_sync_method => datasync,
+        wal_write_strategy => default},
+  tick_timeout => 65,uid => <<"MQTT_NTZHO1JXKM0VP">>}.

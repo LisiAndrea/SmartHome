@@ -1,0 +1,56 @@
+version: '3.3'
+services:
+  rabbitmq:
+    build: ./RabbitMQ/
+    container_name: 'rabbitmq'
+    restart: always
+    hostname: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+        - 1883:1883
+    volumes:
+        - ./RabbitMQ/data/:/var/lib/rabbitmq/
+        - ./RabbitMQ/logs/:/var/log/rabbitmq/
+  db:
+    image: postgres:15.0-alpine
+    restart: always
+    container_name: 'postgresql'
+    hostname: 'postgresql'
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=andlis88
+    ports:
+      - '5432:5432'
+    volumes: 
+      - ./db/dbdata:/var/lib/postgresql/data
+  orchestrator:
+    container_name: 'orchestrator'
+    hostname: 'orchestrator'
+    restart: always
+    build: ./Orchestrator/
+    depends_on: 
+      - 'rabbitmq'
+      - 'db'
+  consumer:
+    container_name: 'consumer'
+    hostname: 'consumer'
+    restart: always
+    build: ./Consumer/
+    depends_on: 
+      - 'rabbitmq'
+      - 'db'
+      - 'manager'
+      - 'orchestrator'
+  manager:
+    container_name: 'manager'
+    hostname: 'manager'
+    restart: always
+    build: ./Manager/
+    depends_on:
+      - 'rabbitmq' 
+      - 'db'
+      - 'orchestrator'
+#volumes:
+#  ./db/dbdata:
+#    driver: local
