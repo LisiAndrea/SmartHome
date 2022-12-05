@@ -6,8 +6,8 @@ services:
     container_name: 'postgresql'
     hostname: 'postgresql'
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=andlis88
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASS}
     ports:
       - '5432:5432'
     volumes: 
