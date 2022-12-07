@@ -1,8 +1,0 @@
-version: "3.3"
-services:
-  consumer:
-    container_name: 'consumer'
-    hostname: 'consumer'
-    restart: always
-    build: .
-

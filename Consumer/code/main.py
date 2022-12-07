@@ -1,10 +1,11 @@
 import psycopg2
 import paho.mqtt.client as mqtt
-import time
 import json
-import time
 from datetime import datetime
 import logging
+import ast
+import os 
+import time
 
 logger = None
 
@@ -29,18 +30,18 @@ class LOG(object):
 
 class DB(object):
 
-    def __init__(self, db_conf):
+    def __init__(self):
         self.conn = None
-        self.get_config(db_conf)
+        self.get_config()
         self.db_connect()
 
-    def get_config(self, db_conf):
+    def get_config(self):
         try:
-            self.DSN = f""" host={db_conf.get("host")} 
-                            port={db_conf.get("port")}
-                            dbname={db_conf.get("dbname")} 
-                            user={db_conf.get("user")} 
-                            password={db_conf.get("pass")} """
+            self.DSN = f""" host={os.environ.get("CONSUMER_DB_HOST")} 
+                            port={os.environ.get("CONSUMER_DB_PORT")}
+                            dbname={os.environ.get("CONSUMER_DB_NAME")} 
+                            user={os.environ.get("CONSUMER_DB_USER")} 
+                            password={os.environ.get("CONSUMER_DB_PASS")} """
         except Exception as e:
             LOG.LOG(e)
 
@@ -90,15 +91,14 @@ class DB(object):
 
 class Consumer(DB):
 
-    def __init__(self, config):
-        super().__init__(config.get("db"))
-        mqtt = config.get("mqtt")
-        self.sub_topic = mqtt.get("sub_topic")
-        self.mqtt_host = mqtt.get("host")
-        self.mqtt_port = mqtt.get("port")
-        self.mqtt_user = mqtt.get("user")
-        self.mqtt_pass = mqtt.get("pass")
-        self.max_ret = mqtt.get("max_retries")
+    def __init__(self):
+        super().__init__()
+        self.sub_topic = ast.literal_eval(ast.literal_eval(os.environ.get("CONSUMER_MQTT_SUB_TOPIC")))
+        self.mqtt_host = os.environ.get("CONSUMER_MQTT_HOST")
+        self.mqtt_port = int(os.environ.get("CONSUMER_MQTT_PORT"))
+        self.mqtt_user = os.environ.get("CONSUMER_MQTT_USER")
+        self.mqtt_pass = os.environ.get("CONSUMER_MQTT_PASS")
+        self.max_ret = int(os.environ.get("CONSUMER_MQTT_MAX_RETRIES"))
         self.start_consumer()
 
     def start_consumer(self):
@@ -142,8 +142,4 @@ if __name__ == "__main__":
     time.sleep(20)
     LOG.setup()
     LOG.LOG("Starting...")
-    with open("config.json", 'r') as f:
-        config = json.load(f)
-    Consumer(config)
-
-
+    Consumer()

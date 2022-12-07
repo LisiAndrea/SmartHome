@@ -18,6 +18,16 @@ So, the core project is composed by four SW modules:
     -   Orchestrator: MQTT python3.10 client which listens on every published data from client sensor and decide to make some action (like publish on an other topic to turn on or off lights)
 
 Every single folder contains more specific description of single module.
+---
+## HOW TO USE
+First of all compile file .env.default with details for each module.
+Then run 
+``` bash
+./start.sh
+```
+It creates an .env file for each module with its own configuration, builds up containers and run.
+
+***
 
 This is open source project, you are free to contribute.
 if you want to write me this is my email [andrealisi88@gmail.com]

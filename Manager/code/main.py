@@ -4,6 +4,7 @@ import json
 import time
 from datetime import datetime
 import logging
+import os
 
 logger = None
 
@@ -29,18 +30,18 @@ class LOG(object):
 
 class DB(object):
 
-    def __init__(self, db_conf):
+    def __init__(self):
         self.conn = None
-        self.set_db_config(db_conf)
+        self.set_db_config()
         self.db_connect()
 
-    def set_db_config(self, db_conf):
+    def set_db_config(self):
         try:
-            self.DSN = f""" host={db_conf.get("host")} 
-                            port={db_conf.get("port")}
-                            dbname={db_conf.get("dbname")} 
-                            user={db_conf.get("user")} 
-                            password={db_conf.get("pass")} """
+            self.DSN = f""" host={os.environ.get("MANAGER_DB_HOST")} 
+                            port={os.environ.get("MANAGER_DB_PORT")}
+                            dbname={os.environ.get("MANAGER_DB_NAME")} 
+                            user={os.environ.get("MANAGER_DB_USER")} 
+                            password={os.environ.get("MANAGER_DB_PASS")} """
         except Exception as e:
             LOG.LOG(e)
 
@@ -77,17 +78,14 @@ class DB(object):
 
 class Manager(DB):
 
-    def __init__(self, config):
-        super().__init__(config.get("db"))
-        mqtt = config.get("mqtt")
-        self.sub_topic = mqtt.get("sub_topic")
-        self.mqtt_host = mqtt.get("host")
-        self.mqtt_port = mqtt.get("port")
-        self.mqtt_user = mqtt.get("user")
-        self.mqtt_pass = mqtt.get("pass")
-        self.max_ret = mqtt.get("max_retries")
-        manager = config.get("manager")
-        self.lux_topic = manager.get('lux_topic')
+    def __init__(self):
+        super().__init__()
+        self.mqtt_host = os.environ.get("MANAGER_MQTT_HOST")
+        self.mqtt_port = int(os.environ.get("MANAGER_MQTT_PORT"))
+        self.mqtt_user = os.environ.get("MANAGER_MQTT_USER")
+        self.mqtt_pass = os.environ.get("MANAGER_MQTT_PASS")
+        self.max_ret = int(os.environ.get("MANAGER_MQTT_MAX_RETRIES"))
+        self.lux_topic = os.environ.get('MANAGER_MQTT_LUX_TOPIC')
         self._run()
 
 
@@ -113,20 +111,16 @@ class Manager(DB):
 
     def on_connect(self, client, userdata, flags, rc):
         LOG.LOG("Connected with result code "+str(rc))
-        for tp in self.sub_topic:
-            client.subscribe(tp)
 
     def on_disconnect(self, userdata, _,rc):
         LOG.LOG("Manager Disconnected...")
 
     def on_unsubscribe(self, userdata, mid):
         LOG.LOG("Manager Unsubscribed...")
-
     
     def on_message(self, client, userdata, msg):
         try:
-            msg = f"Recieved data {msg}"
-            LOG.LOG(msg)
+            pass
         except Exception as e:
             LOG.LOG(e)
 
@@ -147,8 +141,6 @@ if __name__ == "__main__":
     time.sleep(20)
     LOG.setup()
     LOG.LOG("Starting...")
-    with open("config.json", 'r') as f:
-        config = json.load(f)
-    Manager(config)
+    Manager()
 
 

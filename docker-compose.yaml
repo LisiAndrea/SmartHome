@@ -5,6 +5,9 @@ services:
     container_name: 'rabbitmq'
     restart: always
     hostname: 'rabbitmq'
+    environment:
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASS}
     ports:
         - 5672:5672
         - 15672:15672

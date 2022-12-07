@@ -3,6 +3,7 @@ WORKDIR /code
 RUN apk update && apk add libpq-dev 
 RUN apk add --no-cache gcc musl-dev linux-headers
 COPY requirements.txt requirements.txt
+COPY .env .env
 RUN pip install -r requirements.txt
 COPY ./code/* ./
-CMD ["python","-u","main.py"]
+CMD ["sh", "init.sh"]
