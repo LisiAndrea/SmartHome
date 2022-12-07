@@ -27,7 +27,6 @@ do
             echo $l >> Orchestrator/.env
         else
             echo $l >> .env
-            echo "Error!"
         fi
     fi
 done < .env.default
